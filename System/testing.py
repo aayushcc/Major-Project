@@ -3,13 +3,11 @@ import numpy as np
 from ultralytics import YOLO
 import time
 
-# Load your YOLO model
-MODEL_PATH = "yolo11s.pt"   # replace with your trained model
+MODEL_PATH = "yolo11s.pt"
 model = YOLO(MODEL_PATH)
 
-# ----------- DEFINE SINGLE LANE ROI (Modify According To Your Camera) -----------
-# Example rectangle – change coordinates after testing
-ROI = np.array([(200, 300), (450, 300), (450, 550), (200, 550)])
+#DEFINE SINGLE LANE ROI
+ROI = np.array([(125, 492), (891, 490), (890, 326), (596, 96), (292, 99), (122, 490)])
 
 # Vehicle classes to track
 VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
@@ -30,7 +28,7 @@ def bbox_centroid(box):
     return (int((x1 + x2) / 2), int((y1 + y2) / 2))
 
 # Video input
-video_path = "/home/sumankhatri/Documents/GitHub/Major-Project/System/traffic_demo.mp4"
+video_path = "/home/sumankhatri/Videos/lane1.mp4"
 cap = cv2.VideoCapture(video_path)
 
 fps = cap.get(cv2.CAP_PROP_FPS) or 20.0
