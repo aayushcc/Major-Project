@@ -2,11 +2,18 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 import time
+import torch
 
+# ---------------- CUDA CHECK ----------------
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"🚀 Using device: {DEVICE}")
+
+# ---------------- MODEL ----------------
 MODEL_PATH = "yolo11s.pt"
 model = YOLO(MODEL_PATH)
+model.to(DEVICE)
 
-# Define per-lane ROI
+# ---------------- CONFIG ----------------
 LANES = [
     {"video": "/home/sumankhatri/Videos/lane1.mp4",
      "ROI": np.array([(125, 492), (891, 490), (890, 326), (596, 96), (292, 99), (122, 490)])},
@@ -19,78 +26,110 @@ LANES = [
 ]
 
 VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
+
 G_MIN, G_MAX = 5, 45
 CYCLE_BUDGET = 60
 CYCLE_INTERVAL = 10
-TARGET_FPS = 5  # Process 5 FPS per lane
+TARGET_FPS = 5
 
-# Helper functions
+# ---------------- HELPERS ----------------
 def point_in_poly(pt, poly):
     return cv2.pointPolygonTest(poly, pt, False) >= 0
 
 def bbox_centroid(box):
     x1, y1, x2, y2 = box
-    return (int((x1 + x2)/2), int((y1 + y2)/2))
+    return (int((x1 + x2) / 2), int((y1 + y2) / 2))
 
-# Initialize lanes
+def read_latest_frame(cap, max_drop=8):
+    """
+    Always returns the most recent frame.
+    Older frames are dropped to prevent lag.
+    """
+    frame = None
+    for _ in range(max_drop):
+        ret, f = cap.read()
+        if not ret:
+            break
+        frame = f
+    return frame
+
+# ---------------- INIT LANES ----------------
 for lane in LANES:
     lane["cap"] = cv2.VideoCapture(lane["video"])
     lane["fps"] = lane["cap"].get(cv2.CAP_PROP_FPS) or 20.0
     lane["w"] = int(lane["cap"].get(cv2.CAP_PROP_FRAME_WIDTH))
     lane["h"] = int(lane["cap"].get(cv2.CAP_PROP_FRAME_HEIGHT))
-    # Reduce resolution to speed up inference
+
+    # Downscale for faster inference
     lane["resize_w"] = lane["w"] // 2
     lane["resize_h"] = lane["h"] // 2
+
     lane["writer"] = cv2.VideoWriter(
         lane["video"].replace(".mp4", "_out.mp4"),
         cv2.VideoWriter_fourcc(*'mp4v'),
         lane["fps"],
         (lane["w"], lane["h"])
     )
+
     lane["green_time"] = G_MIN
     lane["last_cycle_time"] = time.time()
-    lane["last_detection"] = []  # store last vehicle boxes
+    lane["last_detection"] = []
     lane["frame_counter"] = 0
-    lane["skip_frames"] = max(int(lane["fps"]/TARGET_FPS), 1)
+    lane["skip_frames"] = max(int(lane["fps"] / TARGET_FPS), 1)
 
-print("✅ All lanes initialized. Starting soft-parallel detection...")
+print("✅ All lanes initialized. Real-time CUDA inference active.")
 
-# Soft parallel processing loop
+# ---------------- MAIN LOOP ----------------
 while True:
     all_done = True
+
     for idx, lane in enumerate(LANES):
-        ret, frame = lane["cap"].read()
-        if not ret:
+        frame = read_latest_frame(lane["cap"])
+        if frame is None:
             continue
+
         all_done = False
         lane["frame_counter"] += 1
 
-        # Resize frame for faster inference
         small_frame = cv2.resize(frame, (lane["resize_w"], lane["resize_h"]))
 
-        # Run YOLO only every skip_frames
+        # ---------- YOLO INFERENCE ----------
         if lane["frame_counter"] % lane["skip_frames"] == 0:
-            results = model(small_frame, conf=0.4)
-            r = results[0]
+            results = model(
+                small_frame,
+                conf=0.4,
+                device=DEVICE,
+                half=True,     # FP16 on GPU
+                verbose=False
+            )
+
             vehicles = []
-            for box, cls in zip(r.boxes.xyxy, r.boxes.cls):
-                name = model.names[int(cls)]
-                if name in VEHICLE_CLASSES:
-                    # Scale boxes back to original resolution
-                    x1, y1, x2, y2 = box.cpu().numpy()
-                    x1 = int(x1 * lane["w"] / lane["resize_w"])
-                    y1 = int(y1 * lane["h"] / lane["resize_h"])
-                    x2 = int(x2 * lane["w"] / lane["resize_w"])
-                    y2 = int(y2 * lane["h"] / lane["resize_h"])
-                    vehicles.append([x1, y1, x2, y2])
+            r = results[0]
+
+            if r.boxes is not None:
+                for box, cls in zip(r.boxes.xyxy, r.boxes.cls):
+                    if model.names[int(cls)] in VEHICLE_CLASSES:
+                        x1, y1, x2, y2 = box.cpu().numpy()
+
+                        # Scale back to original size
+                        x1 = int(x1 * lane["w"] / lane["resize_w"])
+                        y1 = int(y1 * lane["h"] / lane["resize_h"])
+                        x2 = int(x2 * lane["w"] / lane["resize_w"])
+                        y2 = int(y2 * lane["h"] / lane["resize_h"])
+
+                        vehicles.append([x1, y1, x2, y2])
+
             lane["last_detection"] = vehicles
         else:
             vehicles = lane["last_detection"]
 
-        # Count vehicles in ROI
-        lane_count = sum(1 for box in vehicles if point_in_poly(bbox_centroid(box), lane["ROI"]))
+        # ---------- COUNT VEHICLES ----------
+        lane_count = sum(
+            1 for box in vehicles
+            if point_in_poly(bbox_centroid(box), lane["ROI"])
+        )
 
-        # Recalculate green time
+        # ---------- GREEN TIME LOGIC ----------
         now = time.time()
         if now - lane["last_cycle_time"] >= CYCLE_INTERVAL:
             lane["last_cycle_time"] = now
@@ -98,27 +137,30 @@ while True:
             lane["green_time"] = int(G_MIN + proportion * CYCLE_BUDGET)
             lane["green_time"] = max(G_MIN, min(G_MAX, lane["green_time"]))
 
-        # DRAW
+        # ---------- DRAW ----------
         cv2.polylines(frame, [lane["ROI"]], True, (0, 255, 255), 2)
-        cv2.putText(frame, f"Lane Vehicles: {lane_count}", (50,40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
-        cv2.putText(frame, f"Green Time: {lane['green_time']}s", (50,80),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+        cv2.putText(frame, f"Lane Vehicles: {lane_count}", (40, 40),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(frame, f"Green Time: {lane['green_time']}s", (40, 80),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
         for box in vehicles:
             x1, y1, x2, y2 = box
-            color = (0,255,0) if point_in_poly(bbox_centroid(box), lane["ROI"]) else (0,0,255)
-            cv2.rectangle(frame, (x1,y1), (x2,y2), color, 2)
+            color = (0, 255, 0) if point_in_poly(bbox_centroid(box), lane["ROI"]) else (0, 0, 255)
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
 
         lane["writer"].write(frame)
-        cv2.imshow(f"Lane {idx+1}", frame)
+        cv2.imshow(f"Lane {idx + 1}", frame)
 
     if all_done:
         break
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release resources
+# ---------------- CLEANUP ----------------
 for lane in LANES:
     lane["cap"].release()
     lane["writer"].release()
+
 cv2.destroyAllWindows()
