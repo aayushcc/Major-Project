@@ -11,7 +11,6 @@ VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
 G_MIN, G_MAX = 5, 45
 CYCLE_BUDGET = 60
 CYCLE_INTERVAL = 5
-TARGET_FPS = 4   # YOLO runs 4 times/sec
 
 LANES = [
     {"video": "/home/sumankhatri/Videos/lane1.mp4",
@@ -26,32 +25,24 @@ LANES = [
 
 detector = VehicleDetector(MODEL_PATH, VEHICLE_CLASSES)
 
+# ---------------- INITIALIZATION ----------------
 for lane in LANES:
     lane["cap"] = cv2.VideoCapture(lane["video"])
-    lane["fps"] = lane["cap"].get(cv2.CAP_PROP_FPS) or 20.0
+    lane["fps"] = lane["cap"].get(cv2.CAP_PROP_FPS) or 30.0
     lane["w"] = int(lane["cap"].get(cv2.CAP_PROP_FRAME_WIDTH))
     lane["h"] = int(lane["cap"].get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     lane["resize_w"] = lane["w"] // 2
     lane["resize_h"] = lane["h"] // 2
 
-    lane["writer"] = cv2.VideoWriter(
-        lane["video"].replace(".mp4", "_out.mp4"),
-        cv2.VideoWriter_fourcc(*'mp4v'),
-        lane["fps"],
-        (lane["w"], lane["h"])
-    )
-
-    lane["frame_counter"] = 0
-    lane["skip_frames"] = max(int(lane["fps"] / TARGET_FPS), 1)
-    lane["last_detection"] = []
-
     lane["green_time"] = G_MIN
     lane["last_cycle_time"] = time.time()
 
-print("✅ All lanes initialized. Real-time processing active.")
+print("🚦 REAL-TIME MODE ACTIVE (frames may be dropped)")
 
-# MAIN LOOP
+start_time = time.time()
+
+# ---------------- MAIN LOOP ----------------
 while True:
     all_done = True
 
@@ -61,18 +52,13 @@ while True:
             continue
 
         all_done = False
-        lane["frame_counter"] += 1
 
-        # -------- Detection (only on selected frames) --------
-        if lane["frame_counter"] % lane["skip_frames"] == 0:
-            vehicles = detector.detect(
-                frame,
-                (lane["resize_w"], lane["resize_h"]),
-                (lane["w"], lane["h"])
-            )
-            lane["last_detection"] = vehicles
-        else:
-            vehicles = lane["last_detection"]
+        # -------- Detection (real-time) --------
+        vehicles = detector.detect(
+            frame,
+            (lane["resize_w"], lane["resize_h"]),
+            (lane["w"], lane["h"])
+        )
 
         # -------- Vehicle counting --------
         lane_count = sum(
@@ -100,7 +86,6 @@ while True:
             color = (0, 255, 0) if point_in_poly(bbox_centroid(box), lane["ROI"]) else (0, 0, 255)
             cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
 
-        lane["writer"].write(frame)
         cv2.imshow(f"Lane {idx + 1}", frame)
 
     if all_done:
@@ -109,10 +94,11 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+end_time = time.time()
+print(f"\n⏱ Total wall-clock processing time: {end_time - start_time:.2f} seconds")
+
 # ---------------- CLEANUP ----------------
 for lane in LANES:
     lane["cap"].release()
-    lane["writer"].release()
 
 cv2.destroyAllWindows()
-
