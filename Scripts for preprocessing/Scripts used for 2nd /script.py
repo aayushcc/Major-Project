@@ -23,6 +23,7 @@ Inside each folder containing the images
 Repeat for other foldrs containing the images
 
 """
+from os import mkdir
 import shutil
 from pathlib import Path
 
@@ -77,16 +78,28 @@ def move_pairs(pairs, image_dst, label_dst):
 
 # MAIN PROGRAM
 
-train, val, test = pairs_creator("/home/aayush/Documents/Dataset Manipulation/Edited/E2 copy XML only/")
+train, val, test = pairs_creator("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Both/")
 
-train_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/train/images")
-train_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/train/labels")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/train")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/test")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/val")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/train/images")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/train/labels")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/test/images")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/test/labels")
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/val/images")  
+mkdir("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/val/labels")
 
-test_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/test/images")
-test_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/test/labels")
+train_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/train/images")
+train_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/train/labels")
 
-val_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/val/images")
-val_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/E3 Post Merge(Removed Classes)/val/labels")
+test_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/test/images")
+test_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/test/labels")
+val_img_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/val/images")
+val_label_dest = Path("/home/aayush/Documents/Dataset Manipulation/Edited/A1 Post Merge(Fixed + Removed Classes + Both lanes)/val/labels")
+
+
 
 move_pairs(train, train_img_dest, train_label_dest)
 move_pairs(test, test_img_dest, test_label_dest)

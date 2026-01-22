@@ -79,10 +79,8 @@ def main(input_dir: str) -> None:
     "Car": 2,
     "Bus": 3,
     "Bike": 4,
-    "People": 5,
-    "Mini-Truck": 6,
-    "Cycle": 7,
-    "Truck": 8
+    "Mini-Truck": 5,
+    "Truck": 6
 }
 
 
