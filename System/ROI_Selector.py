@@ -8,7 +8,7 @@ def mouse_callback(event, x, y, flags, param):
         points.append((x, y))
         print(f"Point added: ({x}, {y})")
 
-cap = cv2.VideoCapture("/home/sumankhatri/Videos/traffic_demo.mp4")
+cap = cv2.VideoCapture("/home/sumankhatri/Videos/B_lane1.mp4")
 
 ret, frame = cap.read()
 cap.release()
