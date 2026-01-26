@@ -1,3 +1,4 @@
 SUMO/venv/
 SUMO/.venv/
 torch
+/System/__pycache__

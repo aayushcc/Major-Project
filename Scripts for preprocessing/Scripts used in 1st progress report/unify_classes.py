@@ -1,39 +1,3 @@
-#!/usr/bin/env python3
-"""
-unify_classes_clean.py
-
-Improved, safer class-unification script for YOLO/Roboflow-style datasets.
-
-Goals / improvements over the original script you posted:
- - Propose mappings (merge/remove) using a richer alias map and fuzzy matching.
- - Do NOT silently pad `names` with many `unused_` placeholders (which caused "6", "links" garbage).
- - Provide a dry-run by default with a clear, human-readable summary of changes.
- - Interactive mode to resolve ambiguous mappings (optional).
- - Safe backups when --apply is used.
- - Writes a mapping JSON so you can audit exactly what changed.
-
-Usage examples:
-  # Dry-run on default folders (relative to script):
-  python unify_classes_clean.py
-
-  # Dry-run on one dataset path:
-  python unify_classes_clean.py /path/to/dataset
-
-  # Apply changes (writes files & backups). You must pass --yes to avoid interactive confirm:
-  python unify_classes_clean.py /path/to/dataset --apply --yes
-
-  # Interactive mode to resolve ambiguous mappings:
-  python unify_classes_clean.py /path/to/dataset --interactive
-
-Notes:
- - The script expects the Roboflow-style structure: dataset root with train/valid/test (or val) subfolders,
-   each containing an `images/` and `labels/` folder. If labels aren't in those names, you can still point
-   the script at a root and it will try to discover `*/labels/*.txt` files.
- - "dry-run" (default) means nothing will be written; the script prints what it WOULD do.
- - "fuzzy matching" (via difflib) proposes likely merges to the target MASTER_NAMES but never applies them
-   silently in interactive mode.
-
-"""
 
 from __future__ import annotations
 import argparse

@@ -6,16 +6,17 @@ from t_detector import VehicleDetector
 from t_utils import point_in_poly, bbox_centroid
 
 # ---------------- CONFIG ----------------
-MODEL_PATH = "last.pt"
-# VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
-VEHICLE_CLASSES = ["Bike","Bus","Car","Cng","Mini-Tryck","Rickshaw","Truck"]
+MODEL_PATH = "yolo11s.pt"
+VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
+# VEHICLE_CLASSES = ["Cng","Rickshaw","Car","Bus","Bike","Mini-Truck","Truck"]
+
 
 G_MIN, G_MAX = 5, 45
 CYCLE_BUDGET = 60
 CYCLE_INTERVAL = 5
 
 LANE = {
-    "video": "/home/sumankhatri/Videos/B_lane1.mp4",
+    "video": "System\B_lane1.mp4",
     "ROI": np.array([
         (3, 419), (1, 712), (1275, 695),
         (1273, 489), (1103, 174), (441, 144), (4, 419)
