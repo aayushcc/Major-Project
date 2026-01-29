@@ -74,7 +74,12 @@ while True:
             lane["green_time"] = int(G_MIN + proportion * CYCLE_BUDGET)
             lane["green_time"] = max(G_MIN, min(G_MAX, lane["green_time"]))
 
+
+
+
+
         # -------- Draw --------
+        
         cv2.polylines(frame, [lane["ROI"]], True, (0, 255, 255), 2)
         cv2.putText(frame, f"Lane Vehicles: {lane_count}", (40, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
