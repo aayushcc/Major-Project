@@ -31,8 +31,7 @@ SUMO_BINARY = r"C:\Program Files (x86)\Eclipse\Sumo\bin\sumo-gui.exe"
 
 Sumo_config = [
     SUMO_BINARY,
-    "-c", "YYY.sumocfg",
-    "--step-length", "0.5"
+    "-c", "YYY.sumocfg"
 ]
 
 
@@ -46,7 +45,8 @@ sumo_cmd = [
     "-c", SUMO_CONFIG,
     "--start",
     "--quit-on-end",
-    "--step-length", "0.5"
+    "--step-length", "1",
+    "--scale", "3"
 ]
 
 traci.start(sumo_cmd)
@@ -74,7 +74,7 @@ current_phase = 0
 
 # ---- Reinforcement Learning Hyperparameters ----
 # The total number of simulation steps for continuous (online) training.
-TOTAL_STEPS = 250
+TOTAL_STEPS = 100
 
 # Learning rate (α) between[0, 1]    #If α = 1, you fully replace the old Q-value with the newly computed estimate.
 ALPHA = 0.1
@@ -121,6 +121,7 @@ def to_array(state_tuple):
     Convert the state tuple into a NumPy array for neural network input.
     """
     return np.array(state_tuple, dtype=np.float32).reshape((1, -1))
+
 
     # Create the DQN model
 # (q_EB_0, q_EB_1, q_EB_2, q_SB_0, q_SB_1, q_SB_2, current_phase)

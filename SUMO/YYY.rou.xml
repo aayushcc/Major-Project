@@ -5,16 +5,16 @@
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <!-- Vehicles, persons and containers (sorted by depart) -->
-    <flow id="f_0" begin="0.00" from="LD1" to="RD1" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_1" begin="0.00" from="LD1" to="UR2" end="1200.00" number="100"/>
-    <flow id="f_10" begin="0.00" color="magenta" from="UL2" to="RD1" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_11" begin="0.00" color="magenta" from="UL2" to="DL2" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_2" begin="0.00" from="LD1" to="DL2" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_3" begin="0.00" color="red" from="DR2" to="UR2" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_4" begin="0.00" color="red" from="DR2" to="LU1" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_5" begin="0.00" color="red" from="DR2" to="RD1" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_6" begin="0.00" color="blue" from="RU1" to="DL2" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_7" begin="0.00" color="blue" from="RU1" to="UR2" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_8" begin="0.00" color="blue" from="RU1" to="LU1" end="1200.00" vehsPerHour="100"/>
-    <flow id="f_9" begin="0.00" color="magenta" from="UL2" to="LU1" end="1200.00" vehsPerHour="100"/>
+    <flow id="f_0" begin="0.00" from="LD1" to="RD1" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_1" begin="0.00" from="LD1" to="UR2" end="1200.00" number="5000"/>
+    <flow id="f_10" begin="0.00" color="magenta" from="UL2" to="RD1" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_11" begin="0.00" color="magenta" from="UL2" to="DL2" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_2" begin="0.00" from="LD1" to="DL2" end="1200.00" vehsPerHour="3000"/>
+    <flow id="f_3" begin="0.00" color="red" from="DR2" to="UR2" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_4" begin="0.00" color="red" from="DR2" to="LU1" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_5" begin="0.00" color="red" from="DR2" to="RD1" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_6" begin="0.00" color="blue" from="RU1" to="DL2" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_7" begin="0.00" color="blue" from="RU1" to="UR2" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_8" begin="0.00" color="blue" from="RU1" to="LU1" end="1200.00" vehsPerHour="2000"/>
+    <flow id="f_9" begin="0.00" color="magenta" from="UL2" to="LU1" end="1200.00" vehsPerHour="2000"/>
 </routes>
