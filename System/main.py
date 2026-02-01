@@ -3,8 +3,8 @@ import numpy as np
 import time
 import serial
 
-from t_detector import VehicleDetector
-from t_utils import compute_green_time,count_vehicles_in_roi,send_to_esp32
+from detector import VehicleDetector
+from utils import compute_green_time,count_vehicles_in_roi,send_to_esp32
 
 MODEL_PATH = "yolo11s.pt"
 VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]

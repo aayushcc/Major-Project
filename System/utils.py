@@ -12,9 +12,19 @@ def bbox_centroid(box):
     return (int((x1 + x2) / 2), int((y1 + y2) / 2))
 
 
-def compute_green_time(vehicle_count, g_min, g_max):
-    ratio = min(vehicle_count / 10.0, 1.0)
-    return int(g_min + ratio * (g_max - g_min))
+# def compute_green_time(vehicle_count, g_min, g_max):
+#     ratio = min(vehicle_count / 10.0, 1.0)
+#     return int(g_min + ratio * (g_max - g_min))
+
+
+def compute_green_time(vc, g_min, g_max):
+    if vc <= 5:
+        ratio = vc / 5
+    elif vc <= 20:
+        ratio = 0.6 + 0.4 * (vc - 5) / 15
+    else:
+        ratio = 1.0
+    return int(g_min + ratio * (g_max - g_min)), ratio
 
 
 def count_vehicles_in_roi(detector, frame, roi):
