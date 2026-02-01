@@ -1,21 +1,35 @@
 import cv2
+import serial
+import time
+
 
 def point_in_poly(pt, poly):
     return cv2.pointPolygonTest(poly, pt, False) >= 0
+
 
 def bbox_centroid(box):
     x1, y1, x2, y2 = box
     return (int((x1 + x2) / 2), int((y1 + y2) / 2))
 
-def read_latest_frame(cap, max_drop=8):
-    """
-    Always returns the most recent frame.
-    Drops older frames to prevent lag buildup.
-    """
-    frame = None
-    for _ in range(max_drop):
-        ret, f = cap.read()
-        if not ret:
-            break
-        frame = f
-    return frame
+
+def compute_green_time(vehicle_count, g_min, g_max):
+    ratio = min(vehicle_count / 10.0, 1.0)
+    return int(g_min + ratio * (g_max - g_min))
+
+
+def count_vehicles_in_roi(detector, frame, roi):
+    boxes = detector.detect(frame)
+    count = 0
+    for box in boxes:
+        if point_in_poly(bbox_centroid(box), roi):
+            count += 1
+    return count
+
+
+def send_to_esp32(ser, lane, color, duration):
+    if ser is None or not ser.is_open:
+        return
+
+    msg = f"{lane},{color},{duration}\n"
+    ser.write(msg.encode())
+    ser.flush()

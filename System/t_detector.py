@@ -9,7 +9,7 @@ class VehicleDetector:
         """
 
         self.device = 0 if torch.cuda.is_available() else "cpu"
-        print(f"🚀 Using device: {self.device}")
+        print(f"Using device: {self.device}")
 
         self.model = YOLO(model_path)
 
