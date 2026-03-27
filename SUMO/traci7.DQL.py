@@ -36,8 +36,8 @@ Sumo_config = [
 
 #  Open connection between SUMO and Traci
 
-SUMO_BINARY = r"C:\Program Files (x86)\Eclipse\Sumo\bin\sumo-gui.exe"
-SUMO_CONFIG = r"C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.sumocfg"
+SUMO_BINARY = r"D:\SUMO\SUMO program\bin\sumo-gui.exe"
+SUMO_CONFIG = r"D:\SUMO\SUMO\YYY.sumocfg"
 
 sumo_cmd = [
     SUMO_BINARY,

@@ -1,3 +1,5 @@
+
+
 import os
 import sys
 import random
@@ -8,6 +10,8 @@ import torch.optim as optim
 import traci
 import time
 
+
+os.environ["SUMO_HOME"] = r"D:\SUMO\SUMO program"
 ############################################
 # 1. SUMO PATH SETUP
 ############################################
@@ -18,8 +22,8 @@ if "SUMO_HOME" not in os.environ:
 tools = os.path.join(os.environ["SUMO_HOME"], "tools")
 sys.path.append(tools)
 
-SUMO_BINARY = r"C:\Program Files (x86)\Eclipse\Sumo\bin\sumo-gui.exe"
-SUMO_CONFIG = r"C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.sumocfg"
+SUMO_BINARY = r"D:\SUMO\SUMO program\bin\sumo-gui.exe"
+SUMO_CONFIG = r"D:\SUMO\SUMO\YYY.sumocfg"
 
 sumo_cmd = [
     SUMO_BINARY,

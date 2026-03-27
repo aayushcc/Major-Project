@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-01-25 11:11:34 by Eclipse SUMO GUI Version 1.19.0
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+<!-- generated on 2026-03-27T20:11:49.796251+05:45 by Eclipse SUMO GUI 1.26.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.net.xml"/>
-        <route-files value="C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.rou.xml"/>
-        <additional-files value="C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.add.xml"/>
+        <net-file value="D:\SUMO\SUMO\YYY.net.xml"/>
+        <route-files value="D:\SUMO\SUMO\YYY.rou.xml"/>
+        <additional-files value="D:\SUMO\SUMO\YYY.add.xml"/>
     </input>
 
     <time>
-        <step-length value="0.5"/>
+        <step-length value="0.1"/>
     </time>
 
+    <processing>
+        <scale value="0.09"/>
+    </processing>
+
     <traci_server>
-        <remote-port value="62261"/>
+        <remote-port value="53114"/>
     </traci_server>
 
     <gui_only>
@@ -22,9 +26,10 @@
         <start value="true"/>
     </gui_only>
 
-</configuration>
+</sumoConfiguration>
 -->
 
 <detector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/det_e2_file.xsd">
-   <interval begin="0.00" end="125.00" id="DR2_1" sampledSeconds="5.55" nVehEntered="4" nVehLeft="4" nVehSeen="4" meanSpeed="10.81" meanTimeLoss="0.30" meanOccupancy="1.50" maxOccupancy="50.00" meanMaxJamLengthInVehicles="0.00" meanMaxJamLengthInMeters="0.00" maxJamLengthInVehicles="0" maxJamLengthInMeters="0.00" jamLengthInVehiclesSum="0" jamLengthInMetersSum="0.00" meanHaltingDuration="0.00" maxHaltingDuration="0.00" haltingDurationSum="0.00" meanIntervalHaltingDuration="0.00" maxIntervalHaltingDuration="0.00" intervalHaltingDurationSum="0.00" startedHalts="0.00" meanVehicleNumber="0.06" maxVehicleNumber="1" />
+   <interval begin="0.00" end="300.00" id="DR2_1" sampledSeconds="29.84" nVehEntered="15" nVehLeft="15" nVehSeen="15" meanSpeed="7.54" meanTimeLoss="1.42" meanOccupancy="2.91" maxOccupancy="50.00" meanMaxJamLengthInVehicles="0.03" meanMaxJamLengthInMeters="0.08" maxJamLengthInVehicles="1" maxJamLengthInMeters="2.38" jamLengthInVehiclesSum="104" jamLengthInMetersSum="246.56" meanHaltingDuration="11.40" maxHaltingDuration="11.40" haltingDurationSum="11.40" meanIntervalHaltingDuration="11.40" maxIntervalHaltingDuration="11.40" intervalHaltingDurationSum="11.40" startedHalts="1.00" meanVehicleNumber="0.10" maxVehicleNumber="1" />
+   <interval begin="300.00" end="500.00" id="DR2_1" sampledSeconds="36.99" nVehEntered="10" nVehLeft="10" nVehSeen="10" meanSpeed="4.06" meanTimeLoss="3.14" meanOccupancy="5.05" maxOccupancy="50.00" meanMaxJamLengthInVehicles="0.10" meanMaxJamLengthInMeters="0.24" maxJamLengthInVehicles="1" maxJamLengthInMeters="2.38" jamLengthInVehiclesSum="203" jamLengthInMetersSum="481.24" meanHaltingDuration="11.15" maxHaltingDuration="11.20" haltingDurationSum="22.30" meanIntervalHaltingDuration="11.15" maxIntervalHaltingDuration="11.20" intervalHaltingDurationSum="22.30" startedHalts="2.00" meanVehicleNumber="0.19" maxVehicleNumber="1" />
 </detector>

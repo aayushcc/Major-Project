@@ -22,8 +22,9 @@ Sumo_config = [
     'sumo-gui',
     '-c', 'YYY.sumocfg',
 ]
-SUMO_BINARY = r"C:\Program Files (x86)\Eclipse\Sumo\bin\sumo-gui.exe"
-SUMO_CONFIG = r"C:\Users\Dell\OneDrive\Desktop\SUMO\YYY.sumocfg"
+SUMO_BINARY = r"D:\SUMO\SUMO program\bin\sumo-gui.exe"
+SUMO_CONFIG = r"D:\SUMO\SUMO\YYY.sumocfg"
+
 Sumo_config = [
     SUMO_BINARY,
     "-c", "YYY.sumocfg",
@@ -59,7 +60,7 @@ q_UL2_2 = 0
 current_phase = 0
 
 # The total number of simulation steps for continuous (online) training.
-TOTAL_STEPS = 2000
+TOTAL_STEPS = 4000
 
 # Learning rate (α) between[0, 1]    #If α = 1, you fully replace the old Q-value with the newly computed estimate.
 ALPHA = 0.3
