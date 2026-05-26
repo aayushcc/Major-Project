@@ -1,14 +1,30 @@
-// ---------------- PIN DEFINITIONS ----------------
-const int red[4]    = {13, 27, 5, 15};
-const int yellow[4] = {12, 26, 18, 2};
-const int green[4]  = {14, 25, 19, 4};
+#include <WiFi.h>
+#include <WebServer.h>
 
-String cmd = "";
+// ---------------- WIFI CONFIG ----------------
+const char* ssid = "ESP32_TRAFFIC";
+const char* password = "12345678";
+
+WebServer server(80);
+
+// ---------------- PIN DEFINITIONS ----------------
+const int red[4]    = {14, 25, 5, 15};
+const int yellow[4] = {12, 26, 18, 2};
+const int green[4]  = {13, 27, 19, 4};
 
 // ---------------- SETUP ----------------
 void setup() {
   Serial.begin(115200);
+  delay(2000);
 
+  // Start Access Point
+  WiFi.softAP(ssid, password);
+
+  Serial.println("ESP32 WiFi Hotspot Started!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.softAPIP());
+
+  // Setup pins
   for (int i = 0; i < 4; i++) {
     pinMode(red[i], OUTPUT);
     pinMode(yellow[i], OUTPUT);
@@ -16,16 +32,17 @@ void setup() {
   }
 
   allRed();
-  Serial.println("ESP32 READY");
+
+  // Define route
+  server.on("/set", handleSet);
+
+  server.begin();
+  Serial.println("HTTP server started");
 }
 
 // ---------------- LOOP ----------------
 void loop() {
-  if (Serial.available()) {
-    cmd = Serial.readStringUntil('\n');
-    cmd.trim();
-    processCommand(cmd);
-  }
+  server.handleClient();
 }
 
 // ---------------- FUNCTIONS ----------------
@@ -48,7 +65,7 @@ void allRed() {
   }
 }
 
-// Set a specific lane to a color
+// Set lane color
 void setLane(int idx, char color) {
   if (idx < 0 || idx > 3) return;
 
@@ -61,17 +78,26 @@ void setLane(int idx, char color) {
   if (color == 'G') digitalWrite(green[idx], HIGH);
 }
 
-// Process serial command
-void processCommand(String cmd) {
-  // Expected format: E,G,12
-  if (cmd.length() < 5) return;
+// Handle HTTP request
+void handleSet() {
+  if (!server.hasArg("lane") || !server.hasArg("color")) {
+    server.send(400, "text/plain", "Missing parameters");
+    return;
+  }
 
-  char laneChar  = cmd.charAt(0);
-  char colorChar = cmd.charAt(2);
-  int duration   = cmd.substring(4).toInt();
+  String laneStr = server.arg("lane");
+  String colorStr = server.arg("color");
+  int duration = server.hasArg("time") ? server.arg("time").toInt() : 0;
+
+  char laneChar = laneStr.charAt(0);
+  char colorChar = colorStr.charAt(0);
 
   int idx = laneIndex(laneChar);
-  if (idx == -1) return;
+
+  if (idx == -1) {
+    server.send(400, "text/plain", "Invalid lane");
+    return;
+  }
 
   setLane(idx, colorChar);
 
@@ -82,4 +108,6 @@ void processCommand(String cmd) {
   Serial.print(" (");
   Serial.print(duration);
   Serial.println("s)");
+
+  server.send(200, "text/plain", "OK");
 }
