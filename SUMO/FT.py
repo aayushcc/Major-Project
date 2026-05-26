@@ -18,7 +18,7 @@ sumo_cmd = [
     "-c", SUMO_CONFIG,
     "--start",
     "--quit-on-end",
-    "--step-length", "0.1",
+    "--step-length", "0.02",
     "--scale", "0.09"
 ]
 

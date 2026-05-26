@@ -148,12 +148,6 @@ while True:
             send_to_esp32(LANES[current_lane_idx]["name"][0], "G", 5)
             send_to_esp32(LANES[prev_lane_idx]["name"][0], "R", 0)
 
-
-
-
-
-
-
     # ---- DISPLAY ----
     for idx, lane in enumerate(LANES):
         ret, frame = lane["cap"].read()

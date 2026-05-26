@@ -18,10 +18,10 @@ sumo_cmd = [
     "-c", SUMO_CONFIG,
     "--start",
     "--quit-on-end",
-    "--step-length", "0.1",
+    "--step-length", "0.02",
     "--scale", "0.09"
 ]
-step_length = 0.1 #update this value in sumo_cmd as well
+step_length = 0.02 #update this value in sumo_cmd as well
 
 traci.start(sumo_cmd)
 print("TraCI connected successfully!")
@@ -42,7 +42,7 @@ q_UL2_1 = 0
 q_UL2_2 = 0
 current_phase = 0
 
-TOTAL_STEPS = 5000
+TOTAL_STEPS = 40000
 
 def get_state():
     global q_DR2_0, q_DR2_1, q_DR2_2, q_LD1_0, q_LD1_1, q_LD1_2, q_RU1_0, q_RU1_1, q_RU1_2, q_UL2_0, q_UL2_1, q_UL2_2, current_phase
@@ -118,9 +118,9 @@ for step in range(TOTAL_STEPS):
 
     demands = [J_UL, J_RU, J_DR, J_LD]
     best = max(demands)
-    if demands[current_phase_index] == 0 and ((time_spent_in_current_phase_in_steps/step_length) >= G_MIN):
+    if demands[current_phase_index] == 0 and ((time_spent_in_current_phase_in_steps*step_length) >= G_MIN):
         switch = True
-    elif ((time_spent_in_current_phase_in_steps/step_length) >= G_MIN) and best>=(demands[current_phase_index]*1.3):
+    elif ((time_spent_in_current_phase_in_steps*step_length) >= G_MIN) and best>=(demands[current_phase_index]*1.3):
         switch = True
     else:
         switch = False
@@ -141,6 +141,9 @@ for step in range(TOTAL_STEPS):
 
     if step % 100 == 0:
         print(f"Step {step}, State: {state}")
+
+    if step % 5000 == 0:
+        print(f"Step {step}, Vehicles passed: {vehicles_passed}, Max waiting time: {max_waiting_time:.2f} seconds")
 
 traci.close()
 
