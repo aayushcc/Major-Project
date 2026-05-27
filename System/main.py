@@ -4,13 +4,12 @@ import time
 import requests
 
 from detector import VehicleDetector
-from utils import compute_green_time, count_vehicles_in_roi
+from utils import count_vehicles_in_roi
 
 MODEL_PATH = "best.pt"
 VEHICLE_CLASSES = ["car", "motorcycle", "bus", "truck"]
 
 G_MIN = 5
-G_MAX = 45
 YELLOW_TIME = 2
 DISPLAY_W = 800
 DISPLAY_H = 450
